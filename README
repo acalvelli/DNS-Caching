@@ -1,0 +1,31 @@
+This repository consists of 4 python files and multiple csv files to implement the DNS Caching functionality of the paper. The results of this implementation are discussed in the term paper. This README provides more insight on how to run this program locally as well as what each csv or text file means.
+
+SETUP:
+We download imports used in this implementation. We run "pip install tldextract" to install the library which parses domain names and extracts the domain name, sub domain name, and suffix. We also run "pip install seaborn" to provide graphing capability for the findings of the RandomForest classifier.
+
+FILES: 
+The four Python files are explained briefly below.
+
+1) setup.py- contains functions associated with generating and analyzing data. These functions include "generate_domain(n)" which generates "n" random DNS query urls to the "random_domains.txt" file. "generate_csv()" which creates the csv file "domains.csv" consisting of the (url,domain length, subdomain length, number of format fields, number of unusual length fields, shannon entropy, and boolean flag "one-time"). This file is used in training the classifier as well as plotting our results. The Shannon Entropy score in that csv file is generated via the "shannon_entropy(string)" function for a given string. The last two functions are for analysis. "plot_thresholds(start,stop,col)" creates the graphs in Figure 1 of the term paper and "determine_cache" computes the overall percentage of one time domains discarded from the cache as discussed in Section 3.2.
+
+2) server.py- reads in domain urls sent form the client. The server then classifies if the given domain is a one-time domain or re-used domain based on the thresholds. The server takes in parameters (rs_port, domain length threshold, subdomain length threshold, format field threshold, unusual length field threhsold) to connect to the client socket and perform that comparison. If all criteria are below their given thresholds, the entry is added to the cache, which is modeled as a dictionary, as well as its timestamp which is needed when the cache is full and an element must be removed. If the server is evaluating based on the thresholds established by the paper, the results are written to "server_results.csv". If the server is evaluating based on the thresholds determined by the graphs in Figure 1, the results are written to "server_results_thresholds.csv".
+
+3) client.py- reads in the list of DNS query url's from the "classified_dns.csv" file. Each url is sent to the server for processing. The client takes in two parameters (rs_hostname, rs_port) to connect to the server socket
+
+4) classifier.py- initializes and trains the RandomForest classifier on the data in "domains.csv".
+
+RUNNING THE PROGRAM:
+To run the program, once the imports are downloaded, we run the server with
+
+python3 server.py s_port#
+
+and the client with
+
+python3 client.py s_hostname s_port#
+
+The classifier and setup files are run via python3 classifier.py and python3 setup.py respectively
+
+
+
+
+
